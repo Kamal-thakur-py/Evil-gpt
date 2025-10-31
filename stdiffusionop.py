@@ -32,6 +32,7 @@ db = client[DB_NAME]
 
 user_collection = db[COLLECTION_NAME]
 queue_collection = db[QUEUE_COLLECTION_NAME]
+HEALTH_CHECK_PORT = 80
 
 # Required channels for users to join
 REQUIRED_CHANNELS = ['@AIpromptFree'] # Removed '@Team_Ai_Networks'
@@ -1738,6 +1739,25 @@ async def admin(update: Update, context: ContextTypes.DEFAULT_TYPE):
     """
     await update.message.reply_text(admin_commands, parse_mode="HTML")
 
+
+# Simple function to start the HTTP server in a separate thread
+def run_health_check_server():
+    # Use ThreadingTCPServer to avoid blocking the main async loop
+    class HealthCheckHandler(http.server.SimpleHTTPRequestHandler):
+        def do_GET(self):
+            # Always respond with a 200 OK status for the health check
+            self.send_response(200)
+            self.send_header('Content-type', 'text/html')
+            self.end_headers()
+            self.wfile.write(b"Bot is alive and polling.")
+
+    # Start the server on the required port
+    try:
+        with socketserver.ThreadingTCPServer(("", HEALTH_CHECK_PORT), HealthCheckHandler) as httpd:
+            httpd.serve_forever()
+    except Exception as e:
+        logger.error(f"Health Check Server failed to start: {e}")
+
 # Add command handlers to the application
 application.add_handler(CommandHandler("start", start))
 application.add_handler(CallbackQueryHandler(joined, pattern="^joined$"))
@@ -1782,5 +1802,13 @@ application.add_handler(CommandHandler("topref", topref))
 application.add_handler(CommandHandler("userstats", userstats))
 application.add_handler(CommandHandler("admin", admin))
 
+# Run the bot
 if __name__ == '__main__':
-    application.run_polling()
+    # 1. Start the Health Check Server in a separate thread
+    threading.Thread(target=run_health_check_server, daemon=True).start()
+    
+    # 2. Start the main Telegram long polling loop
+    try:
+        application.run_polling()
+    except Exception as e:
+        logger.error(f"Telegram Bot Polling Failed: {e}")

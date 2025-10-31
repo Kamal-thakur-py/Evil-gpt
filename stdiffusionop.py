@@ -18,7 +18,7 @@ from datetime import datetime, timezone
 
 
 # Set your bot token here
-TOKEN = "7084752835:AAHjo7zAmRf344jBwtSQw9g-_zv_-q0oB74"
+TOKEN = "7205442355:AAF0dug9jDf3wTUdcv0TeZfYUiMLnp6AdC8"
 
 # MongoDB configuration
 MONGO_URI = "mongodb+srv://kamal:9988Kamal@cluster0.j8d7v.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0"

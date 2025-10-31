@@ -20,7 +20,7 @@ import socketserver
 import threading 
 
 # Set your bot token here
-TOKEN = "7205442355:AAF0dug9jDf3wTUdcv0TeZfYUiMLnp6AdC8"
+TOKEN = "7205442355:AAEQW9N-E8eymfp4f_t0sWvDqpDSJ9Vja28"
 
 # MongoDB configuration
 MONGO_URI = "mongodb+srv://kamal:9988Kamal@cluster0.j8d7v.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0"

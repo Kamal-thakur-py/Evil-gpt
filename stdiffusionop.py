@@ -15,7 +15,9 @@ import tempfile
 import urllib.parse
 import requests
 from datetime import datetime, timezone
-
+import http.server
+import socketserver
+import threading 
 
 # Set your bot token here
 TOKEN = "7205442355:AAF0dug9jDf3wTUdcv0TeZfYUiMLnp6AdC8"
@@ -1805,9 +1807,10 @@ application.add_handler(CommandHandler("admin", admin))
 # Run the bot
 if __name__ == '__main__':
     # 1. Start the Health Check Server in a separate thread
+    # This must run BEFORE the blocking run_polling() call
     threading.Thread(target=run_health_check_server, daemon=True).start()
     
-    # 2. Start the main Telegram long polling loop
+    # 2. Start the main Telegram long polling loop (This is a BLOCKING call)
     try:
         application.run_polling()
     except Exception as e:
